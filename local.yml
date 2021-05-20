@@ -40,3 +40,23 @@
       dest: /home/tcleve/.bachrc
       owner: tcleve
       group: tcleve
+
+  - name: add ansible user
+    user:
+      name: sonia
+      system: yes
+
+  - name: set up sudo for ansible user
+    copy:
+      src: files/sudoer_sonia
+      dest: /etc/sudoer.d/sonia
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: add ansible-pull cron job
+    cron:
+      name: ansible auto-provision
+      user: sonia
+      minute: "*/10"
+      job: ansible-pull -o -U https://github.com/clevelat/ansible_desktop.git
